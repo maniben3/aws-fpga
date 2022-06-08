@@ -19,7 +19,7 @@ package require tar
 set TOP top_sp
 
 ## Replace with the name of your module
-set CL_MODULE cl_hello_world
+set CL_MODULE cl_miner
 
 #################################################
 ## Command-line Arguments
@@ -205,7 +205,7 @@ set_param hd.clockRoutingWireReduction false
 ##################################################
 if {${cl.synth}} {
    source -notrace ./synth_${CL_MODULE}.tcl
-   set synth_dcp ${timestamp}.CL.post_synth.dcp
+   set synth_dcp ${timestamp}.CL.post_synth.dcp										   
 }
 
 ##################################################
@@ -251,7 +251,7 @@ if {$implement} {
    ########################
    # CL Optimize
    ########################
-   set place_preHookTcl  ""
+   set place_preHookTcl  ""					   
    if {$opt} {
       puts "\nAWS FPGA: ([clock format [clock seconds] -format %T]) - Running optimization";
       impl_step opt_design $TOP $opt_options $opt_directive $opt_preHookTcl $opt_postHookTcl
@@ -309,7 +309,7 @@ if {$implement} {
    #writing unencrypted dcp for analysis to checkpoints dir.
    write_checkpoint -force $CL_DIR/build/checkpoints/${timestamp}.SH_CL_routed.dcp
 
-   #writing encrypted dcp which can be sent to AWS
+   #writing encrypted dcp which can be sent to AWS														
    write_checkpoint -encrypt -force $CL_DIR/build/checkpoints/to_aws/${timestamp}.SH_CL_routed.dcp
 
    # Generate debug probes file
@@ -334,6 +334,7 @@ set vivado_version [string range [version -short] 0 5]
 puts "vivado_version is $vivado_version\n"
 
 puts $manifest_file "manifest_format_version=2\n"
+												 
 puts $manifest_file "pci_vendor_id=$vendor_id\n"
 puts $manifest_file "pci_device_id=$device_id\n"
 puts $manifest_file "pci_subsystem_id=$subsystem_id\n"
@@ -343,6 +344,7 @@ puts $manifest_file "shell_version=$shell_version\n"
 puts $manifest_file "dcp_file_name=${timestamp}.SH_CL_routed.dcp\n"
 puts $manifest_file "hdk_version=$hdk_version\n"
 puts $manifest_file "tool_version=v$vivado_version\n"
+
 puts $manifest_file "date=$timestamp\n"
 puts $manifest_file "clock_recipe_a=$clock_recipe_a\n"
 puts $manifest_file "clock_recipe_b=$clock_recipe_b\n"
@@ -368,3 +370,4 @@ if {[string compare $notify_via_sns "1"] == 0} {
 }
 
 puts "AWS FPGA: ([clock format [clock seconds] -format %T]) - Build complete.";
+
