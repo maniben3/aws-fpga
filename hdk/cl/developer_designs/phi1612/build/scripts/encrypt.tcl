@@ -39,9 +39,13 @@ file copy -force $CL_DIR/design/cl_id_defines.vh                      $TARGET_DI
 file copy -force $CL_DIR/design/cl_common_defines.vh                  $TARGET_DIR
 file copy -force $CL_DIR/design/miner.v                               $TARGET_DIR
 file copy -force $CL_DIR/design/miner_top.v                           $TARGET_DIR
-file copy -force $CL_DIR/design/keccak.v                              $TARGET_DIR
+file copy -force $CL_DIR/design/cube.v                                $TARGET_DIR
+file copy -force $CL_DIR/design/fugue.v                               $TARGET_DIR
+file copy -force $CL_DIR/design/echo.v                                $TARGET_DIR
+file copy -force $CL_DIR/design/fugue_smix.v                          $TARGET_DIR
+file copy -force $CL_DIR/design/gost.v                                $TARGET_DIR
 file copy -force $CL_DIR/design/jh.v                                  $TARGET_DIR
-file copy -force $CL_DIR/design/echo.v  			                  $TARGET_DIR
+file copy -force $CL_DIR/design/skein.v                               $TARGET_DIR
 																				 
 																				 
 file copy -force $UNUSED_TEMPLATES_DIR/unused_apppf_irq_template.inc  $TARGET_DIR
