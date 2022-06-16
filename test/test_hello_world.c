@@ -57,7 +57,7 @@ void usage(char* program_name) {
     printf("usage: %s [--slot <slot-id>][<poke-value>]\n", program_name);
 }
 
-uint32_t byte_swap(uint32_t value);
+uint64_t byte_swap(uint64_t value);
  
 #endif
 
@@ -66,8 +66,8 @@ uint32_t byte_swap(uint32_t value);
  */
 int peek_poke_example(uint32_t value, int slot_id, int pf_id, int bar_id);
 
-uint32_t byte_swap(uint32_t value) {
-    uint32_t swapped_value = 0;
+uint64_t byte_swap(uint64_t value) {
+    uint64_t swapped_value = 0;
     int b;
     for (b = 0; b < 4; b++) {
         swapped_value |= ((value >> (b * 8)) & 0xff) << (8 * (3-b));
@@ -78,9 +78,9 @@ uint32_t byte_swap(uint32_t value) {
 #ifdef SV_TEST
 //For cadence and questa simulators the main has to return some value
 # ifdef INT_MAIN
-int test_main(uint32_t *exit_code)
+int test_main(uint64_t *exit_code)
 # else 
-void test_main(uint32_t *exit_code)
+void test_main(uint64_t *exit_code)
 # endif 
 #else 
 int main(int argc, char **argv)
@@ -93,7 +93,7 @@ int main(int argc, char **argv)
       svSetScope(scope);
     #endif
 
-    uint32_t value = 0xdeadbeef;
+    uint64_t value = 0xdeadbeefbeefdead;
     int slot_id = 0;
     int rc;
     
