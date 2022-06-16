@@ -50,12 +50,12 @@ logic rst_main_n_sync;
 //-------------------------------------------------
   logic        arvalid_q;
   logic [31:0] araddr_q;
-  logic [31:0] hello_world_q_byte_swapped;
+  logic [63:0] hello_world_q_byte_swapped;
   logic [15:0] vled_q;
   logic [15:0] pre_cl_sh_status_vled;
   logic [15:0] sh_cl_status_vdip_q;
   logic [15:0] sh_cl_status_vdip_q2;
-  logic [31:0] hello_world_q;
+   logic [63:0] hello_world_q;
 
 //-------------------------------------------------
 // ID Values (cl_hello_world_defines.vh)
@@ -256,7 +256,7 @@ always_ff @(posedge clk_main_a0)
    else if (arvalid_q) 
    begin
       rvalid <= 1;
-      rdata  <= (araddr_q == `HELLO_WORLD_REG_ADDR) ? hello_world_q_byte_swapped[31:0]:
+      rdata  <= (araddr_q == `HELLO_WORLD_REG_ADDR) ? hello_world_q_byte_swapped[63:0]:
                 (araddr_q == `VLED_REG_ADDR       ) ? {16'b0,vled_q[15:0]            }:
                                                       `UNIMPLEMENTED_REG_VALUE        ;
       rresp  <= 0;
@@ -269,17 +269,18 @@ always_ff @(posedge clk_main_a0)
 
 always_ff @(posedge clk_main_a0)
    if (!rst_main_n_sync) begin                    // Reset
-      hello_world_q[31:0] <= 32'h0000_0000;
+      hello_world_q[63:0] <= 64'h0000_0000_0000_0000;
    end
    else if (wready & (wr_addr == `HELLO_WORLD_REG_ADDR)) begin  
       hello_world_q[31:0] <= wdata[31:0];
+      hello_world_q[63:32] <= wdata[31:0];
    end
    else begin                                // Hold Value
-      hello_world_q[31:0] <= hello_world_q[31:0];
+      hello_world_q[63:0] <= hello_world_q[63:0];
    end
 
-assign hello_world_q_byte_swapped[31:0] = {hello_world_q[7:0],   hello_world_q[15:8],
-                                           hello_world_q[23:16], hello_world_q[31:24]};
+   assign hello_world_q_byte_swapped[63:0] = {hello_world_q[7:0],   hello_world_q[15:8],
+                                              hello_world_q[23:16], hello_world_q[31:24],hello_world_q[39:32],hello_world_q[47:40],hello_world_q[55:48],hello_world_q[63:56]};
 
 //-------------------------------------------------
 // Virtual LED Register
