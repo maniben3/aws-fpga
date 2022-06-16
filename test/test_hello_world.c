@@ -64,7 +64,7 @@ uint64_t byte_swap(uint64_t value);
 /*
  * An example to attach to an arbitrary slot, pf, and bar with register access.
  */
-int peek_poke_example(uint32_t value, int slot_id, int pf_id, int bar_id);
+int peek_poke_example(uint64_t value, int slot_id, int pf_id, int bar_id);
 
 uint64_t byte_swap(uint64_t value) {
     uint64_t swapped_value = 0;
@@ -227,7 +227,7 @@ int check_afi_ready(int slot_id) {
 /*
  * An example to attach to an arbitrary slot, pf, and bar with register access.
  */
-int peek_poke_example(uint32_t value, int slot_id, int pf_id, int bar_id) {
+int peek_poke_example(uint64_t value, int slot_id, int pf_id, int bar_id) {
     int rc;
     /* pci_bar_handle_t is a handler for an address space exposed by one PCI BAR on one of the PCI PFs of the FPGA */
 
