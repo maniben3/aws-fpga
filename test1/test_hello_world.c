@@ -93,7 +93,7 @@ int main(int argc, char **argv)
       scope = svGetScopeFromName("tb");
       svSetScope(scope);
     #endif
-
+    printf("Example: del CAFE4B1D\n");
     uint32_t value = 0xabcdefab;
     int slot_id = 0;
     int rc;
