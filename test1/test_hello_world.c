@@ -94,8 +94,8 @@ int main(int argc, char **argv)
       scope = svGetScopeFromName("tb");
       svSetScope(scope);
     #endif
-    scanf("%x", value);
     uint32_t value;
+    scanf("%x", &value);
     int slot_id = 0;
     int rc;
     
