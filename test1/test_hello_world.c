@@ -56,7 +56,6 @@ int check_afi_ready(int slot_id);
 void usage(char* program_name) {
     printf("usage: %s [--slot <slot-id>][<poke-value>]\n", program_name);
     printf("Enter value");
-    scanf("%x",&value);
 }
 
 uint32_t byte_swap(uint32_t value);
@@ -95,7 +94,7 @@ int main(int argc, char **argv)
       svSetScope(scope);
     #endif
 
-    uint32_t value;
+    uint32_t value = 0xabcdefab;
     int slot_id = 0;
     int rc;
     
