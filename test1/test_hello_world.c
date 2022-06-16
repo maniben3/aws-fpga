@@ -94,7 +94,8 @@ int main(int argc, char **argv)
       svSetScope(scope);
     #endif
     printf("Example: del CAFE4B1D\n");
-    uint32_t value = 0xabcdefab;
+    scanf("%x", &value);
+    uint32_t value;
     int slot_id = 0;
     int rc;
     
