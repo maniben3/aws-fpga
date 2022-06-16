@@ -18,6 +18,7 @@
 #include <stdarg.h>
 #include <assert.h>
 #include <string.h>
+#include <unistd.h>
 
 #ifdef SV_TEST
    #include "fpga_pci_sv.h"
@@ -93,8 +94,7 @@ int main(int argc, char **argv)
       scope = svGetScopeFromName("tb");
       svSetScope(scope);
     #endif
-    printf("Example: del CAFE4B1D\n");
-    scanf("%x", &value);
+    scanf("%x", value);
     uint32_t value;
     int slot_id = 0;
     int rc;
