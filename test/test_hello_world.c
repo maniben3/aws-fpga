@@ -94,7 +94,7 @@ int main(int argc, char **argv)
     #endif
 
     uint32_t value ;
-    for (value = 1; i < 2000; value++) {
+    for (value = 1; value < 2000; value++) {
                     return 1;
                 }
     int slot_id = 0;
