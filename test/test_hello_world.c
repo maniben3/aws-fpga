@@ -1,4 +1,17 @@
-
+// Amazon FPGA Hardware Development Kit
+//
+// Copyright 2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+//
+// Licensed under the Amazon Software License (the "License"). You may not use
+// this file except in compliance with the License. A copy of the License is
+// located at
+//
+//    http://aws.amazon.com/asl/
+//
+// or in the "license" file accompanying this file. This file is distributed on
+// an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+// implied. See the License for the specific language governing permissions and
+// limitations under the License.
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
@@ -79,8 +92,11 @@ int main(int argc, char **argv)
       scope = svGetScopeFromName("tb");
       svSetScope(scope);
     #endif
-    uint32_t value = 0xefbeadde;
 
+    uint32_t value ;
+    for (value = 1; i < 2000; value++) {
+                    return 1;
+                }
     int slot_id = 0;
     int rc;
     
@@ -231,9 +247,7 @@ int peek_poke_example(uint32_t value, int slot_id, int pf_id, int bar_id) {
     rc = fpga_pci_attach(slot_id, pf_id, bar_id, 0, &pci_bar_handle);
     fail_on(rc, out, "Unable to attach to the AFI on slot id %d", slot_id);
 #endif
-    {
-        uint32_t value ;
-        for (value = 1; value < 2000; value++) {
+    
     /* write a value into the mapped address space */
     uint32_t expected = byte_swap(value);
     printf("Writing 0x%08x to HELLO_WORLD register (0x%016lx)\n", value, HELLO_WORLD_REG_ADDR);
@@ -249,15 +263,12 @@ int peek_poke_example(uint32_t value, int slot_id, int pf_id, int bar_id) {
     printf("register: 0x%x\n", value);
     if(value == expected) {
         printf("TEST PASSED");
-        printf("Resulting value matched expected value 0x%x. It worked!\n", value);
+        printf("Resulting value matched expected value 0x%x. It worked!\n", expected);
     }
     else{
         printf("TEST FAILED");
-        printf("Resulting value did not match expected value 0x%x. Something didn't work.\n", value);
+        printf("Resulting value did not match expected value 0x%x. Something didn't work.\n", expected);
     }
-  }
-		
-}
 out:
     /* clean up */
     if (pci_bar_handle >= 0) {
