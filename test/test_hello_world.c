@@ -95,11 +95,9 @@ int main(int argc, char **argv)
 
     uint32_t value ;
     for (value = 1; value < 2000; value++) {
-                    return 1;
-                }
     int slot_id = 0;
     int rc;
-    
+    }
 #ifndef SV_TEST
     // Process command line args
     {
