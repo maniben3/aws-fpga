@@ -47,8 +47,12 @@ const struct logger *logger = &logger_stdout;
 static uint16_t pci_vendor_id = 0x1D0F; /* Amazon PCI Vendor ID */
 static uint16_t pci_device_id = 0xF000; /* PCI Device ID preassigned by Amazon for F1 applications */
 #endif
-int main(int argc, char **argv)
-#endif
+int peek_poke_example(uint32_t value, int slot_id, int pf_id, int bar_id) {
+int rc;
+    /* pci_bar_handle_t is a handler for an address space exposed by one PCI BAR on one of the PCI PFs of the FPGA */
+
+pci_bar_handle_t pci_bar_handle = PCI_BAR_HANDLE_INIT;
+int main()
 {
     uint32_t value = 0xdeadbeef;
     uint32_t expected = 0xefbeadde;
