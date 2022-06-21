@@ -66,14 +66,6 @@ uint32_t byte_swap(uint32_t value);
  */
 int peek_poke_example(uint32_t value, int slot_id, int pf_id, int bar_id);
 
-uint32_t byte_swap(uint32_t value) {
-    uint32_t swapped_value = 0;
-    int b;
-    for (b = 0; b < 4; b++) {
-        swapped_value |= ((value >> (b * 8)) & 0xff) << (8 * (3-b));
-    }
-    return swapped_value;
-}
 
 #ifdef SV_TEST
 //For cadence and questa simulators the main has to return some value
@@ -93,7 +85,6 @@ int main(int argc, char **argv)
       svSetScope(scope);
     #endif
 
-    uint32_t value = 0xefbeadde;
     int slot_id = 0;
     int rc;
     
@@ -227,6 +218,8 @@ int check_afi_ready(int slot_id) {
 /*
  * An example to attach to an arbitrary slot, pf, and bar with register access.
  */
+uint32_t value ;
+for (value = 1; value <= 2000; ++value){
 int peek_poke_example(uint32_t value, int slot_id, int pf_id, int bar_id) {
     int rc;
     /* pci_bar_handle_t is a handler for an address space exposed by one PCI BAR on one of the PCI PFs of the FPGA */
@@ -266,6 +259,7 @@ int peek_poke_example(uint32_t value, int slot_id, int pf_id, int bar_id) {
         printf("TEST FAILED");
         printf("Resulting value did not match expected value 0x%x. Something didn't work.\n", value);
     }
+}
 out:
     /* clean up */
     if (pci_bar_handle >= 0) {
