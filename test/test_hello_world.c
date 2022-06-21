@@ -79,7 +79,7 @@ int main(int argc, char **argv)
       scope = svGetScopeFromName("tb");
       svSetScope(scope);
     #endif
-
+    uint32_t value = 0xefbeadde;
 
     int slot_id = 0;
     int rc;
@@ -233,7 +233,6 @@ int peek_poke_example(uint32_t value, int slot_id, int pf_id, int bar_id) {
 #endif
     {
         uint32_t value ;
-        int value_set = 0;
         for (value = 1; value < 2000; value++) {
     /* write a value into the mapped address space */
     uint32_t expected = byte_swap(value);
