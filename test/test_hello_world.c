@@ -234,7 +234,7 @@ int peek_poke_example(uint32_t value, int slot_id, int pf_id, int bar_id) {
     {
         uint32_t value ;
         int value_set = 0;
-        for (value = 1; i < 2000; i++) {
+        for (value = 1; value < 2000; value++) {
     /* write a value into the mapped address space */
     uint32_t expected = byte_swap(value);
     printf("Writing 0x%08x to HELLO_WORLD register (0x%016lx)\n", value, HELLO_WORLD_REG_ADDR);
