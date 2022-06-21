@@ -37,17 +37,6 @@
 
 #define HELLO_WORLD_REG_ADDR UINT64_C(0x500)
 
-/* use the stdout logger for printing debug information  */
-#ifndef SV_TEST
-const struct logger *logger = &logger_stdout;
-/*
- * pci_vendor_id and pci_device_id values below are Amazon's and avaliable to use for a given FPGA slot. 
- * Users may replace these with their own if allocated to them by PCI SIG
- */
-static uint16_t pci_vendor_id = 0x1D0F; /* Amazon PCI Vendor ID */
-static uint16_t pci_device_id = 0xF000; /* PCI Device ID preassigned by Amazon for F1 applications */
-#endif
-
 int main()
 {
     uint32_t value = 0xdeadbeef;
@@ -59,7 +48,6 @@ int main()
     printf("Writing 0x%08x to HELLO_WORLD register (0x%016lx)\n", value, HELLO_WORLD_REG_ADDR);
     rc = fpga_pci_poke(pci_bar_handle, HELLO_WORLD_REG_ADDR, value);
     rc = fpga_pci_peek(pci_bar_handle, HELLO_WORLD_REG_ADDR, &value);
-    fail_on(rc, out, "Unable to read read from the fpga !");
     printf("=====  Entering peek_poke_example =====\n");
     printf("register: 0x%x\n", value);
     if(value == expected) {
