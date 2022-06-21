@@ -92,12 +92,10 @@ int main(int argc, char **argv)
       scope = svGetScopeFromName("tb");
       svSetScope(scope);
     #endif
-
-    uint32_t value ;
-    for (value = 1; value < 2000; value++) {
     int slot_id = 0;
     int rc;
-    }
+    uint32_t value ;
+    for (value = 1; value < 2000; value++) ;
 #ifndef SV_TEST
     // Process command line args
     {
