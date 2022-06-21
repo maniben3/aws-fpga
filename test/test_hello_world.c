@@ -95,7 +95,7 @@ int main(int argc, char **argv)
     int slot_id = 0;
     int rc;
     uint32_t value ;
-    for (value = 1; value < 2000; value++) ;
+    for (value = 1; value < 4294967290; value++) ;
 #ifndef SV_TEST
     // Process command line args
     {
@@ -257,7 +257,7 @@ int peek_poke_example(uint32_t value, int slot_id, int pf_id, int bar_id) {
     fail_on(rc, out, "Unable to read read from the fpga !");
     printf("=====  Entering peek_poke_example =====\n");
     printf("register: 0x%x\n", value);
-    if(value == expected) {
+    if(value == 0xdeadbeef) {
         printf("TEST PASSED");
         printf("Resulting value matched expected value 0x%x. It worked!\n", expected);
     }
