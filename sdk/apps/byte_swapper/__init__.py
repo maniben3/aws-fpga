@@ -16,4 +16,4 @@ logger = logging.getLogger(__name__)
 handler = logging.StreamHandler()
 handler.setFormatter(logging.Formatter('%(asctime)s %(message)s'))
 
-import app
+from app import app
