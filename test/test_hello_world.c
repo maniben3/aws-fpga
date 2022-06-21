@@ -87,33 +87,7 @@ int main(int argc, char **argv)
 
     int slot_id = 0;
     int rc;
-    
-#ifndef SV_TEST
-    // Process command line args
-    {
-        int i;
-        int value_set = 0;
-        for (i = 1; i < argc; i++) {
-            if (!strcmp(argv[i], "--slot")) {
-                i++;
-                if (i >= argc) {
-                    printf("error: missing slot-id\n");
-                    usage(argv[0]);
-                    return 1;
-                }
-                sscanf(argv[i], "%d", &slot_id);
-            } else if (!value_set) {
-                sscanf(argv[i], "%x", &value);
-                value_set = 1;
-            } else {
-                printf("error: Invalid arg: %s", argv[i]);
-                usage(argv[0]);
-                return 1;
-            }
-        }
-    }
-#endif
-
+   
     /* initialize the fpga_mgmt library */
     rc = fpga_mgmt_init();
     fail_on(rc, out, "Unable to initialize the fpga_mgmt library");
@@ -219,7 +193,7 @@ int check_afi_ready(int slot_id) {
  * An example to attach to an arbitrary slot, pf, and bar with register access.
  */
 uint32_t value ;
-for (value = 1; value <= 2000; ++value){
+for(value = 1; value < 2000; ++value){
 int peek_poke_example(uint32_t value, int slot_id, int pf_id, int bar_id) {
     int rc;
     /* pci_bar_handle_t is a handler for an address space exposed by one PCI BAR on one of the PCI PFs of the FPGA */
