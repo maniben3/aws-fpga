@@ -52,10 +52,10 @@ int main()
     printf("register: 0x%x\n", value);
     if(value == expected) {
         printf("TEST PASSED");
-        printf("Resulting value matched expected value 0x%x. It worked!\n", expected);
+        printf("Resulting value matched expected value 0x%x. It worked!\n", value);
     }
     else{
         printf("TEST FAILED");
-        printf("Resulting value did not match expected value 0x%x. Something didn't work.\n", expected);
+        printf("Resulting value did not match expected value 0x%x. Something didn't work.\n", value);
     }
 }
