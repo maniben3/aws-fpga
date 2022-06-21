@@ -57,17 +57,17 @@ void usage(char* program_name) {
     printf("usage: %s [--slot <slot-id>][<poke-value>]\n", program_name);
 }
 
-uint64_t byte_swap(uint64_t value);
+uint32_t byte_swap(uint32_t value);
  
 #endif
 
 /*
  * An example to attach to an arbitrary slot, pf, and bar with register access.
  */
-int peek_poke_example(uint64_t value, int slot_id, int pf_id, int bar_id);
+int peek_poke_example(uint32_t value, int slot_id, int pf_id, int bar_id);
 
-uint64_t byte_swap(uint64_t value) {
-    uint64_t swapped_value = 0;
+uint32_t byte_swap(uint32_t value) {
+    uint32_t swapped_value = 0;
     int b;
     for (b = 0; b < 4; b++) {
         swapped_value |= ((value >> (b * 8)) & 0xff) << (8 * (3-b));
@@ -78,9 +78,9 @@ uint64_t byte_swap(uint64_t value) {
 #ifdef SV_TEST
 //For cadence and questa simulators the main has to return some value
 # ifdef INT_MAIN
-int test_main(uint64_t *exit_code)
+int test_main(uint32_t *exit_code)
 # else 
-void test_main(uint64_t *exit_code)
+void test_main(uint32_t *exit_code)
 # endif 
 #else 
 int main(int argc, char **argv)
@@ -93,7 +93,7 @@ int main(int argc, char **argv)
       svSetScope(scope);
     #endif
 
-    uint64_t value = 0xdeadbeefbeefdead;
+    uint32_t value = 0xefbeadde;
     int slot_id = 0;
     int rc;
     
@@ -227,7 +227,7 @@ int check_afi_ready(int slot_id) {
 /*
  * An example to attach to an arbitrary slot, pf, and bar with register access.
  */
-int peek_poke_example(uint64_t value, int slot_id, int pf_id, int bar_id) {
+int peek_poke_example(uint32_t value, int slot_id, int pf_id, int bar_id) {
     int rc;
     /* pci_bar_handle_t is a handler for an address space exposed by one PCI BAR on one of the PCI PFs of the FPGA */
 
@@ -260,11 +260,11 @@ int peek_poke_example(uint64_t value, int slot_id, int pf_id, int bar_id) {
     printf("register: 0x%x\n", value);
     if(value == expected) {
         printf("TEST PASSED");
-        printf("Resulting value matched expected value 0x%x. It worked!\n", expected);
+        printf("Resulting value matched expected value 0x%x. It worked!\n", value);
     }
     else{
         printf("TEST FAILED");
-        printf("Resulting value did not match expected value 0x%x. Something didn't work.\n", expected);
+        printf("Resulting value did not match expected value 0x%x. Something didn't work.\n", value);
     }
 out:
     /* clean up */
