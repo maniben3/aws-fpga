@@ -321,13 +321,13 @@ assign arready = !arvalid_q && !rvalid;
 
 	end
 
-	//wire [31:0] nonce1, nonce2, nonce3;
-	//wire nonce_found1, nonce_found2, nonce_found3;
+	wire [31:0] nonce1, nonce2, nonce3;
+	wire nonce_found1, nonce_found2, nonce_found3;
 	wire [31:0] nonce1, nonce2;
 	wire nonce_found1, nonce_found2;
 
 	miner # (.CORES(1)) m1 (
-		.clk(clk_extra_c0),
+		.clk(clk_extra_a3),
 		.reset(new_block),
 		.block(block),
 		.nonce_start(32'd0),
@@ -335,25 +335,25 @@ assign arready = !arvalid_q && !rvalid;
 		.nonce_out(nonce1)
 	);
 
-//	miner # (.CORES(2)) m2 (
-//		.clk(clk_extra_c0),
-//		.reset(new_block),
-//		.block(block),
-//		.nonce_start(32'd1),
-//		.nonce_found(nonce_found2),
-//		.nonce_out(nonce2)
-//	);
+	miner # (.CORES(2)) m2 (
+		.clk(clk_extra_a3),
+		.reset(new_block),
+		.block(block),
+		.nonce_start(32'd1),
+		.nonce_found(nonce_found2),
+		.nonce_out(nonce2)
+	);
 
-//	miner # (.CORES(3)) m3 (
-//		.clk(clk_extra_c0),
-//		.reset(new_block),
-//		.block(block),
-//		.nonce_start(32'd2),
-//		.nonce_found(nonce_found3),
-//		.nonce_out(nonce3)
-//	);
+	miner # (.CORES(3)) m3 (
+		.clk(clk_extra_a3),
+		.reset(new_block),
+		.block(block),
+		.nonce_start(32'd2),
+		.nonce_found(nonce_found3),
+		.nonce_out(nonce3)
+	);
 
-	always_ff @(posedge clk_extra_c0) begin
+	always_ff @(posedge clk_extra_a3) begin
 
 		if (!rst_main_n_sync) begin
 			result <= 32'h00000000;
@@ -361,12 +361,12 @@ assign arready = !arvalid_q && !rvalid;
 		else if ( nonce_found1 ) begin
 			result <= nonce1;
 		end
-//		else if ( nonce_found2 ) begin
-//			result <= nonce2;
-//		end
-//		else if ( nonce_found3 ) begin
-//			result <= nonce3;
-//		end
+		else if ( nonce_found2 ) begin
+			result <= nonce2;
+		end
+		else if ( nonce_found3 ) begin
+			result <= nonce3;
+		end
 		else begin
 			result <= result;
 		end
