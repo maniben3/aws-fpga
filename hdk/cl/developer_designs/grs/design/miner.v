@@ -31,7 +31,8 @@ module miner # (
 
 	wire [511:0] hash1;
     wire [511:0] hash2;
-    
+    reg r_clk50=0;
+	wire w_xor_clk50=(r_clk50 ^ clk);
     reg reset_d, reset_q;
     reg [647:0] block0_d, block0_q;
     reg [647:0] block1_d, block1_q;
@@ -44,8 +45,8 @@ module miner # (
     assign nonce_found = nonce_found_q;
     assign nonce_out = nonce_out_q;
     
-    groestl512 groestl_1 ( clk, block0_q, hash1 );
-    groestl512 groestl_2 ( clk, block1_q, hash2 );
+    groestl512 groestl_1 ( w_xor_clk50, block0_q, hash1 );
+    groestl512 groestl_2 ( w_xor_clk50, block1_q, hash2 );
     
     always @ ( * ) begin
     
@@ -80,7 +81,7 @@ module miner # (
         
     end
     
-    always @ (posedge clk) begin
+    always @ (posedge w_xor_clk50) begin
     
         block0_q <= block0_d;
         block1_q <= block1_d;
