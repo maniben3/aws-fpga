@@ -34,7 +34,8 @@ module miner # (
 	wire [31:0] hash3;
 	
 	reg reset_d, reset_q;
-	reg [607:0] block_d, block_q;
+	reg [511:0] midstate_d, midstate_q;
+	reg [95:0] data_d, data_q;
 	reg [31:0] target_d, target_q;
 	reg [31:0] nonce_d, nonce_q;
 	reg [31:0] nonce_out_d, nonce_out_q;
@@ -46,7 +47,7 @@ module miner # (
 	assign nonce_found = nonce_found_q;
 	assign nonce_out = nonce_out_q;
 	
-	grostl512 grostl ( clk, block_q, nonce_q, hash1 );
+	skein512 skein ( clk, midstate_q, data_q, nonce_q, hash1 );
 	sha256_pipe130 sha256_1 ( clk, hash1_q, hash2 );
 	sha256_pipe123 sha256_2 ( clk, hash2_q, hash3 );
 
@@ -54,8 +55,9 @@ module miner # (
 
 		if ( reset_q ) begin
 
-			block_d <= block[639:32];
-			target_d <= block[31:0];
+			midstate_d <= block[639:128];
+		        data_d <= block[127:32];
+		        target_d <= block[31:0];
 			
 			nonce_d <= nonce_start;
 
@@ -65,7 +67,8 @@ module miner # (
 		end
 		else begin
 
-			block_d <= block_q;
+			midstate_d <= midstate_q;
+			data_d <= data_q;
 			target_d <= target_q;
 			nonce_d <= nonce_q + CORES;
 
@@ -87,7 +90,8 @@ module miner # (
 
 	always @ (posedge clk) begin
 
-		block_q <= block_d;
+		midstate_q <= midstate_d;
+		data_q <= data_d;
 		target_q <= target_d;
 		
 		nonce_q <= nonce_d;
