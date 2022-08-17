@@ -320,8 +320,8 @@ assign arready = !arvalid_q && !rvalid;
 	wire nonce_found1;
 
 	miner # (.CORES(1)) m1 (
-//		.clk(clk_extra_c0),
-		.clk(clk_main_a0),
+		.clk(clk_extra_c0),
+//		.clk(clk_main_a0),
 		.reset(new_block),
 		.block(block),
 		.nonce_start(32'd0),
@@ -330,8 +330,8 @@ assign arready = !arvalid_q && !rvalid;
 	);
 
 
-//	always @(posedge clk_extra_c0) begin
-	always @(posedge clk_main_a0) begin
+	always @(posedge clk_extra_c0) begin
+//	always @(posedge clk_main_a0) begin
 
 		if (!rst_main_n_sync) begin
 			result <= 32'h00000000;
