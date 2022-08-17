@@ -26,13 +26,9 @@ module miner # (
      output nonce_found,
      output [31:0] nonce_out
  );
- 
-    localparam OFFSET = 32'd172;
 
 	wire [511:0] hash1;
     wire [511:0] hash2;
-    reg r_clk50=0;
-	wire w_xor_clk50=(r_clk50 ^ clk);
     reg reset_d, reset_q;
     reg [647:0] block0_d, block0_q;
     reg [647:0] block1_d, block1_q;
@@ -63,7 +59,7 @@ module miner # (
     
             nonce_d = nonce_q + CORES;
     
-            nonce_out_d = nonce_q - (CORES * OFFSET);
+            nonce_out_d = nonce_q - (CORES);
             hash_out_d = { hash2[263:256], hash2[271:264], hash2[279:272], hash2[287:280] };
     
             if ( hash_out_d <= target_d )
@@ -81,7 +77,7 @@ module miner # (
         
     end
     
-    always @ (posedge w_xor_clk50) begin
+	always @ (posedge clk) begin
     
         block0_q <= block0_d;
         block1_q <= block1_d;
