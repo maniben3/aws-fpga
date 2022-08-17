@@ -41,8 +41,8 @@ module miner # (
     assign nonce_found = nonce_found_q;
     assign nonce_out = nonce_out_q;
     
-    groestl512 groestl_1 ( w_xor_clk50, block0_q, hash1 );
-    groestl512 groestl_2 ( w_xor_clk50, block1_q, hash2 );
+	groestl512 groestl_1 ( clk, block0_q, hash1 );
+	groestl512 groestl_2 ( clk, block1_q, hash2 );
     
     always @ ( * ) begin
     
