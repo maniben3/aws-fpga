@@ -1,360 +1,138 @@
-/*
- * Copyright (c) 2016 Sprocket
- *
- * This is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License with
- * additional permissions to the one published by the Free Software
- * Foundation, either version 3 of the License, or (at your option)
- * any later version. For more information see LICENSE.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
-
-module groestl512 (
-	input clk,
-	input [647:0] block,
-	output [511:0] hash
-);
-
-	reg [511:0] hash_d, hash_q;
-	assign hash = hash_q;
-	
-	reg [1023:0] p_d, p_q;
-	reg [1023:0] q_d, q_q;
-	reg [1023:0] f_d, f_q;
-
-	reg [1023:0] s00_d, s00_q;
-	reg [1023:0] s01_d, s01_q;
-	reg [1023:0] s02_d, s02_q;
-	reg [1023:0] s03_d, s03_q;
-	reg [1023:0] s04_d, s04_q;
-	reg [1023:0] s05_d, s05_q;
-	reg [1023:0] s06_d, s06_q;
-	reg [1023:0] s07_d, s07_q;
-	reg [1023:0] s08_d, s08_q;
-	reg [1023:0] s09_d, s09_q;
-	reg [1023:0] s10_d, s10_q;
-	reg [1023:0] s11_d, s11_q;
-	reg [1023:0] s12_d, s12_q;
-	reg [1023:0] s13_d, s13_q;
-	reg [1023:0] s14_d, s14_q;
-	reg [1023:0] s15_d, s15_q;
-	reg [1023:0] s16_d, s16_q;
-	reg [1023:0] s17_d, s17_q;
-	reg [1023:0] s18_d, s18_q;
-	reg [1023:0] s19_d, s19_q;
-	reg [1023:0] s20_d, s20_q;
-	reg [1023:0] s21_d, s21_q;
-	reg [1023:0] s22_d, s22_q;
-	reg [1023:0] s23_d, s23_q;
-	reg [1023:0] s24_d, s24_q;
-	reg [1023:0] s25_d, s25_q;
-	reg [1023:0] s26_d, s26_q;
-	reg [1023:0] s27_d, s27_q;
-	reg [1023:0] s28_d, s28_q;
-	reg [1023:0] s29_d, s29_q;
-	reg [1023:0] s30_d, s30_q;
-	reg [1023:0] s31_d, s31_q;
-	reg [1023:0] s32_d, s32_q;
-	reg [1023:0] s33_d, s33_q;
-	reg [1023:0] s34_d, s34_q;
-	reg [1023:0] s35_d, s35_q;
-	reg [1023:0] s36_d, s36_q;
-	reg [1023:0] s37_d, s37_q;
-	reg [1023:0] s38_d, s38_q;
-	reg [1023:0] s39_d, s39_q;
-	reg [1023:0] s40_d, s40_q;
-	reg [1023:0] s41_d, s41_q;
-	reg [1023:0] s42_d, s42_q;
-
-	wire [1023:0] p00,p01,p02,p03,p04,p05,p06,p07,p08,p09,p10,p11,p12,p13;
-	wire [1023:0] q00,q01,q02,q03,q04,q05,q06,q07,q08,q09,q10,q11,q12,q13;
-	wire [1023:0] f00,f01,f02,f03,f04,f05,f06,f07,f08,f09,f10,f11,f12,f13;
-
-	reg [1023:0] p00_d,p01_d,p02_d,p03_d,p04_d,p05_d,p06_d,p07_d,p08_d,p09_d,p10_d,p11_d,p12_d,p13_d;
-	reg [1023:0] p00_q,p01_q,p02_q,p03_q,p04_q,p05_q,p06_q,p07_q,p08_q,p09_q,p10_q,p11_q,p12_q,p13_q;
-
-	reg [1023:0] q00_d,q01_d,q02_d,q03_d,q04_d,q05_d,q06_d,q07_d,q08_d,q09_d,q10_d,q11_d,q12_d,q13_d;
-	reg [1023:0] q00_q,q01_q,q02_q,q03_q,q04_q,q05_q,q06_q,q07_q,q08_q,q09_q,q10_q,q11_q,q12_q,q13_q;
-
-	reg [1023:0] f00_d,f01_d,f02_d,f03_d,f04_d,f05_d,f06_d,f07_d,f08_d,f09_d,f10_d,f11_d,f12_d,f13_d;
-	reg [1023:0] f00_q,f01_q,f02_q,f03_q,f04_q,f05_q,f06_q,f07_q,f08_q,f09_q,f10_q,f11_q,f12_q,f13_q;
-
-	// Round 0
-	permutation_p p_0 (clk, 4'd0, p_q, p00);
-	permutation_q q_0 (clk, 4'd0, q_q, q00);
-	permutation_p f_0 (clk, 4'd0, f_q, f00);
-
-	// Round 1
-	permutation_p p_1 (clk, 4'd1, p00_q, p01);
-	permutation_q q_1 (clk, 4'd1, q00_q, q01);
-	permutation_p f_1 (clk, 4'd1, f00_q, f01);
-
-	// Round 2
-	permutation_p p_2 (clk, 4'd2, p01_q, p02);
-	permutation_q q_2 (clk, 4'd2, q01_q, q02);
-	permutation_p f_2 (clk, 4'd2, f01_q, f02);
-
-	// Round 3
-	permutation_p p_3 (clk, 4'd3, p02_q, p03);
-	permutation_q q_3 (clk, 4'd3, q02_q, q03);
-	permutation_p f_3 (clk, 4'd3, f02_q, f03);
-
-	// Round 4
-	permutation_p p_4 (clk, 4'd4, p03_q, p04);
-	permutation_q q_4 (clk, 4'd4, q03_q, q04);
-	permutation_p f_4 (clk, 4'd4, f03_q, f04);
-
-	// Round 5
-	permutation_p p_5 (clk, 4'd5, p04_q, p05);
-	permutation_q q_5 (clk, 4'd5, q04_q, q05);
-	permutation_p f_5 (clk, 4'd5, f04_q, f05);
-
-	// Round 6
-	permutation_p p_6 (clk, 4'd6, p05_q, p06);
-	permutation_q q_6 (clk, 4'd6, q05_q, q06);
-	permutation_p f_6 (clk, 4'd6, f05_q, f06);
-
-	// Round 7
-	permutation_p p_7 (clk, 4'd7, p06_q, p07);
-	permutation_q q_7 (clk, 4'd7, q06_q, q07);
-	permutation_p f_7 (clk, 4'd7, f06_q, f07);
-
-	// Round 8
-	permutation_p p_8 (clk, 4'd8, p07_q, p08);
-	permutation_q q_8 (clk, 4'd8, q07_q, q08);
-	permutation_p f_8 (clk, 4'd8, f07_q, f08);
-
-	// Round 9
-	permutation_p p_9 (clk, 4'd9, p08_q, p09);
-	permutation_q q_9 (clk, 4'd9, q08_q, q09);
-	permutation_p f_9 (clk, 4'd9, f08_q, f09);
-
-	// Round 10
-	permutation_p p_10 (clk, 4'd10, p09_q, p10);
-	permutation_q q_10 (clk, 4'd10, q09_q, q10);
-	permutation_p f_10 (clk, 4'd10, f09_q, f10);
-
-	// Round 11
-	permutation_p p_11 (clk, 4'd11, p10_q, p11);
-	permutation_q q_11 (clk, 4'd11, q10_q, q11);
-	permutation_p f_11 (clk, 4'd11, f10_q, f11);
-
-	// Round 12
-	permutation_p p_12 (clk, 4'd12, p11_q, p12);
-	permutation_q q_12 (clk, 4'd12, q11_q, q12);
-	permutation_p f_12 (clk, 4'd12, f11_q, f12);
-
-	// Round 13
-	permutation_p p_13 (clk, 4'd13, p12_q, p13);
-	permutation_q q_13 (clk, 4'd13, q12_q, q13);
-	permutation_p f_13 (clk, 4'd13, f12_q, f13);
-
-	always @ (*) begin
-
-		hash_d <= s41_q[511:0] ^ f13[511:0];
-
-		f_d <= { p13[1023:16] ^ q13[1023:16], p13[15:0] ^ q13[15:0] ^ 16'h0200 };
-		p_d <= { block, 360'd0, 16'h0201 };
-		q_d <= ~{ block, 360'd0, 16'h0001 };
-
-		s00_d <= { p13[1023:16] ^ q13[1023:16], p13[15:0] ^ q13[15:0] ^ 16'h0200 };
-		s01_d <= s00_q;
-		s02_d <= s01_q;
-		s03_d <= s02_q;
-		s04_d <= s03_q;
-		s05_d <= s04_q;
-		s06_d <= s05_q;
-		s07_d <= s06_q;
-		s08_d <= s07_q;
-		s09_d <= s08_q;
-		s10_d <= s09_q;
-		s11_d <= s10_q;
-		s12_d <= s11_q;
-		s13_d <= s12_q;
-		s14_d <= s13_q;
-		s15_d <= s14_q;
-		s16_d <= s15_q;
-		s17_d <= s16_q;
-		s18_d <= s17_q;
-		s19_d <= s18_q;
-		s20_d <= s19_q;
-		s21_d <= s20_q;
-		s22_d <= s21_q;
-		s23_d <= s22_q;
-		s24_d <= s23_q;
-		s25_d <= s24_q;
-		s26_d <= s25_q;
-		s27_d <= s26_q;
-		s28_d <= s27_q;
-		s29_d <= s28_q;
-		s30_d <= s29_q;
-		s31_d <= s30_q;
-		s32_d <= s31_q;
-		s33_d <= s32_q;
-		s34_d <= s33_q;
-		s35_d <= s34_q;
-		s36_d <= s35_q;
-		s37_d <= s36_q;
-		s38_d <= s37_q;
-		s39_d <= s38_q;
-		s40_d <= s39_q;
-		s41_d <= s40_q;
-		s42_d <= s41_q;
-
-		p00_d <= p00;
-		p01_d <= p01;
-		p02_d <= p02;
-		p03_d <= p03;
-		p04_d <= p04;
-		p05_d <= p05;
-		p06_d <= p06;
-		p07_d <= p07;
-		p08_d <= p08;
-		p09_d <= p09;
-		p10_d <= p10;
-		p11_d <= p11;
-		p12_d <= p12;
-		p13_d <= p13;
-
-		q00_d <= ~q00;
-		q01_d <= ~q01;
-		q02_d <= ~q02;
-		q03_d <= ~q03;
-		q04_d <= ~q04;
-		q05_d <= ~q05;
-		q06_d <= ~q06;
-		q07_d <= ~q07;
-		q08_d <= ~q08;
-		q09_d <= ~q09;
-		q10_d <= ~q10;
-		q11_d <= ~q11;
-		q12_d <= ~q12;
-		q13_d <= ~q13;
-
-		f00_d <= f00;
-		f01_d <= f01;
-		f02_d <= f02;
-		f03_d <= f03;
-		f04_d <= f04;
-		f05_d <= f05;
-		f06_d <= f06;
-		f07_d <= f07;
-		f08_d <= f08;
-		f09_d <= f09;
-		f10_d <= f10;
-		f11_d <= f11;
-		f12_d <= f12;
-		f13_d <= f13;
-
-	end
-	
-	always @ (posedge clk) begin
-	
-		hash_q <= hash_d;
-//		hash_q <= { hash_d[31:0], hash_d[63:32], hash_d[95:64], hash_d[127:96], hash_d[159:128], hash_d[191:160], hash_d[223:192], hash_d[255:224], hash_d[287:256], hash_d[319:288], hash_d[351:320], hash_d[383:352], hash_d[415:384], hash_d[447:416], hash_d[479:448], hash_d[511:480] };
-		
-		p_q <= p_d;
-		q_q <= q_d;
-		f_q <= f_d;
-		
-		s00_q <= s00_d;
-		s01_q <= s01_d;
-		s02_q <= s02_d;
-		s03_q <= s03_d;
-		s04_q <= s04_d;
-		s05_q <= s05_d;
-		s06_q <= s06_d;
-		s07_q <= s07_d;
-		s08_q <= s08_d;
-		s09_q <= s09_d;
-		s10_q <= s10_d;
-		s11_q <= s11_d;
-		s12_q <= s12_d;
-		s13_q <= s13_d;
-		s14_q <= s14_d;
-		s15_q <= s15_d;
-		s16_q <= s16_d;
-		s17_q <= s17_d;
-		s18_q <= s18_d;
-		s19_q <= s19_d;
-		s20_q <= s20_d;
-		s21_q <= s21_d;
-		s22_q <= s22_d;
-		s23_q <= s23_d;
-		s24_q <= s24_d;
-		s25_q <= s25_d;
-		s26_q <= s26_d;
-		s27_q <= s27_d;
-		s28_q <= s28_d;
-		s29_q <= s29_d;
-		s30_q <= s30_d;
-		s31_q <= s31_d;
-		s32_q <= s32_d;
-		s33_q <= s33_d;
-		s34_q <= s34_d;
-		s35_q <= s35_d;
-		s36_q <= s36_d;
-		s37_q <= s37_d;
-		s38_q <= s38_d;
-		s39_q <= s39_d;
-		s40_q <= s40_d;
-		s41_q <= s41_d;
-		s42_q <= s42_d;
-
-		p00_q <= p00_d;
-		p01_q <= p01_d;
-		p02_q <= p02_d;
-		p03_q <= p03_d;
-		p04_q <= p04_d;
-		p05_q <= p05_d;
-		p06_q <= p06_d;
-		p07_q <= p07_d;
-		p08_q <= p08_d;
-		p09_q <= p09_d;
-		p10_q <= p10_d;
-		p11_q <= p11_d;
-		p12_q <= p12_d;
-		p13_q <= p13_d;
-
-		q00_q <= q00_d;
-		q01_q <= q01_d;
-		q02_q <= q02_d;
-		q03_q <= q03_d;
-		q04_q <= q04_d;
-		q05_q <= q05_d;
-		q06_q <= q06_d;
-		q07_q <= q07_d;
-		q08_q <= q08_d;
-		q09_q <= q09_d;
-		q10_q <= q10_d;
-		q11_q <= q11_d;
-		q12_q <= q12_d;
-		q13_q <= q13_d;
-
-		f00_q <= f00_d;
-		f01_q <= f01_d;
-		f02_q <= f02_d;
-		f03_q <= f03_d;
-		f04_q <= f04_d;
-		f05_q <= f05_d;
-		f06_q <= f06_d;
-		f07_q <= f07_d;
-		f08_q <= f08_d;
-		f09_q <= f09_d;
-		f10_q <= f10_d;
-		f11_q <= f11_d;
-		f12_q <= f12_d;
-		f13_q <= f13_d;
-
-	end
-
+module e0 (x, y);
+	input [31:0] x;
+	output [31:0] y;
+	assign y = {x[1:0],x[31:2]} ^ {x[12:0],x[31:13]} ^ {x[21:0],x[31:22]};
 endmodule
-
-
+module e1 (x, y);
+	input [31:0] x;
+	output [31:0] y;
+	assign y = {x[5:0],x[31:6]} ^ {x[10:0],x[31:11]} ^ {x[24:0],x[31:25]};
+endmodule
+module ch (x, y, z, o);
+	input [31:0] x, y, z;
+	output [31:0] o;
+	assign o = z ^ (x & (y ^ z));
+endmodule
+module maj (x, y, z, o);
+	input [31:0] x, y, z;
+	output [31:0] o;
+	assign o = (x & y) | (z & (x | y));
+endmodule
+module s0 (x, y);
+	input [31:0] x;
+	output [31:0] y;
+	assign y[31:29] = x[6:4] ^ x[17:15];
+	assign y[28:0] = {x[3:0], x[31:7]} ^ {x[14:0],x[31:18]} ^ x[31:3];
+endmodule
+module s1 (x, y);
+	input [31:0] x;
+	output [31:0] y;
+	assign y[31:22] = x[16:7] ^ x[18:9];
+	assign y[21:0] = {x[6:0],x[31:17]} ^ {x[8:0],x[31:19]} ^ x[31:10];
+endmodule
+module round (idx, in, k, w, out);
+	input  [7:0]idx;
+	input  [255:0]in;
+	input  [ 31:0]k;
+	input  [ 31:0]w;
+	output [255:0]out;
+	always @(w)
+		$display("i=%d k=%8x w=%8x",idx,k,w);
+	wire [31:0]a; assign a = in[ 31:  0];
+	wire [31:0]b; assign b = in[ 63: 32];
+	wire [31:0]c; assign c = in[ 95: 64];
+	wire [31:0]d; assign d = in[127: 96];
+	wire [31:0]e; assign e = in[159:128];
+	wire [31:0]f; assign f = in[191:160];
+	wire [31:0]g; assign g = in[223:192];
+	wire [31:0]h; assign h = in[255:224];
+	wire [31:0]e0_w; e0 e0_(a,e0_w);
+	wire [31:0]e1_w; e1 e1_(e,e1_w);
+	wire [31:0]ch_w; ch ch_(e,f,g,ch_w);
+	wire [31:0]mj_w; maj maj_(a,b,c,mj_w);
+	wire [31:0]t1; assign t1 = h+w+k+ch_w+e1_w;
+	wire [31:0]t2; assign t2 = mj_w+e0_w;
+	wire [31:0]a_; assign a_ = t1+t2;
+	wire [31:0]d_; assign d_ = d+t1;
+	assign out = { g,f,e,d_,c,b,a,a_ };
+endmodule
+module sha256_transform(
+	input  wire [255:0]state_in,
+	input  wire [511:0]data_in,
+	output wire [255:0]state_out
+);
+	localparam Ks = {
+		32'h428a2f98, 32'h71374491, 32'hb5c0fbcf, 32'he9b5dba5,
+		32'h3956c25b, 32'h59f111f1, 32'h923f82a4, 32'hab1c5ed5,
+		32'hd807aa98, 32'h12835b01, 32'h243185be, 32'h550c7dc3,
+		32'h72be5d74, 32'h80deb1fe, 32'h9bdc06a7, 32'hc19bf174,
+		32'he49b69c1, 32'hefbe4786, 32'h0fc19dc6, 32'h240ca1cc,
+		32'h2de92c6f, 32'h4a7484aa, 32'h5cb0a9dc, 32'h76f988da,
+		32'h983e5152, 32'ha831c66d, 32'hb00327c8, 32'hbf597fc7,
+		32'hc6e00bf3, 32'hd5a79147, 32'h06ca6351, 32'h14292967,
+		32'h27b70a85, 32'h2e1b2138, 32'h4d2c6dfc, 32'h53380d13,
+		32'h650a7354, 32'h766a0abb, 32'h81c2c92e, 32'h92722c85,
+		32'ha2bfe8a1, 32'ha81a664b, 32'hc24b8b70, 32'hc76c51a3,
+		32'hd192e819, 32'hd6990624, 32'hf40e3585, 32'h106aa070,
+		32'h19a4c116, 32'h1e376c08, 32'h2748774c, 32'h34b0bcb5,
+		32'h391c0cb3, 32'h4ed8aa4a, 32'h5b9cca4f, 32'h682e6ff3,
+		32'h748f82ee, 32'h78a5636f, 32'h84c87814, 32'h8cc70208,
+		32'h90befffa, 32'ha4506ceb, 32'hbef9a3f7, 32'hc67178f2};
+	genvar i;
+	generate
+	for(i=0; i<64; i=i+1)
+	begin : RND
+			wire [255:0] state;
+			wire [31:0]W;
+			if(i<16)
+			begin
+				assign W = data_in[i*32+31:i*32];
+			end
+			else
+			begin
+				wire [31:0]s0_w; s0 so_(RND[i-15].W,s0_w);
+				wire [31:0]s1_w; s1 s1_(RND[i-2].W,s1_w);
+				assign W = s1_w + RND[i - 7].W + s0_w + RND[i - 16].W;
+			end
+			if(i == 0)
+				round R (
+					.idx(i[7:0]),
+					.in(state_in),
+					.k( Ks[32*(63-i)+31:32*(63-i)] ),
+					.w(W),
+					.out(state) );
+			else
+				round R (
+					.idx(i[7:0]),
+					.in(RND[i-1].state),
+					.k( Ks[32*(63-i)+31:32*(63-i)] ),
+					.w(W),
+					.out(state) );
+	end
+	endgenerate
+	wire [31:0]a; assign a = state_in[ 31:  0];
+	wire [31:0]b; assign b = state_in[ 63: 32];
+	wire [31:0]c; assign c = state_in[ 95: 64];
+	wire [31:0]d; assign d = state_in[127: 96];
+	wire [31:0]e; assign e = state_in[159:128];
+	wire [31:0]f; assign f = state_in[191:160];
+	wire [31:0]g; assign g = state_in[223:192];
+	wire [31:0]h; assign h = state_in[255:224];
+	wire [31:0]a1; assign a1 = RND[63].state[ 31:  0];
+	wire [31:0]b1; assign b1 = RND[63].state[ 63: 32];
+	wire [31:0]c1; assign c1 = RND[63].state[ 95: 64];
+	wire [31:0]d1; assign d1 = RND[63].state[127: 96];
+	wire [31:0]e1; assign e1 = RND[63].state[159:128];
+	wire [31:0]f1; assign f1 = RND[63].state[191:160];
+	wire [31:0]g1; assign g1 = RND[63].state[223:192];
+	wire [31:0]h1; assign h1 = RND[63].state[255:224];	
+	wire [31:0]a2; assign a2 = a+a1;
+	wire [31:0]b2; assign b2 = b+b1;
+	wire [31:0]c2; assign c2 = c+c1;
+	wire [31:0]d2; assign d2 = d+d1;
+	wire [31:0]e2; assign e2 = e+e1;
+	wire [31:0]f2; assign f2 = f+f1;
+	wire [31:0]g2; assign g2 = g+g1;
+	wire [31:0]h2; assign h2 = h+h1;
+	assign state_out = {h2,g2,f2,e2,d2,c2,b2,a2};
+endmodule
