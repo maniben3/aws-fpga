@@ -35,9 +35,6 @@
 /* /aws-fpga/hdk/cl/examples/common/cl_common_defines.vh */
 /* SV_TEST macro should be set if SW/HW co-simulation should be enabled */
 
-#define HELLO_WORLD_REG_ADDR UINT64_C(0x500)
-#define VLED_REG_ADDR	UINT64_C(0x504)
-
 /* use the stdout logger for printing debug information  */
 #ifndef SV_TEST
 const struct logger *logger = &logger_stdout;
@@ -57,23 +54,11 @@ void usage(char* program_name) {
     printf("usage: %s [--slot <slot-id>][<poke-value>]\n", program_name);
 }
 
-uint32_t byte_swap(uint32_t value);
- 
 #endif
 
 /*
  * An example to attach to an arbitrary slot, pf, and bar with register access.
  */
-int peek_poke_example(uint32_t value, int slot_id, int pf_id, int bar_id);
-
-uint32_t byte_swap(uint32_t value) {
-    uint32_t swapped_value = 0;
-    int b;
-    for (b = 0; b < 4; b++) {
-        swapped_value |= ((value >> (b * 8)) & 0xff) << (8 * (3-b));
-    }
-    return swapped_value;
-}
 
 #ifdef SV_TEST
 //For cadence and questa simulators the main has to return some value
@@ -132,27 +117,6 @@ int main(int argc, char **argv)
     fail_on(rc, out, "AFI not ready");
 #endif
 
-    
-    /* Accessing the CL registers via AppPF BAR0, which maps to sh_cl_ocl_ AXI-Lite bus between AWS FPGA Shell and the CL*/
-
-    printf("===== Starting with peek_poke_example =====\n");
-    rc = peek_poke_example(value, slot_id, FPGA_APP_PF, APP_PF_BAR0);
-    fail_on(rc, out, "peek-poke example failed");
-
-    printf("Developers are encouraged to modify the Virtual DIP Switch by calling the linux shell command to demonstrate how AWS FPGA Virtual DIP switches can be used to change a CustomLogic functionality:\n");
-    printf("$ fpga-set-virtual-dip-switch -S (slot-id) -D (16 digit setting)\n\n");
-    printf("In this example, setting a virtual DIP switch to zero clears the corresponding LED, even if the peek-poke example would set it to 1.\nFor instance:\n");
-
-    printf(
-        "# sudo fpga-set-virtual-dip-switch -S 0 -D 1111111111111111\n"
-        "# sudo fpga-get-virtual-led  -S 0\n"
-        "FPGA slot id 0 have the following Virtual LED:\n"
-        "1010-1101-1101-1110\n"
-        "# sudo fpga-set-virtual-dip-switch -S 0 -D 0000000000000000\n"
-        "# sudo fpga-get-virtual-led  -S 0\n"
-        "FPGA slot id 0 have the following Virtual LED:\n"
-        "0000-0000-0000-0000\n"
-    );
 
 #ifndef SV_TEST
     return rc;
@@ -244,20 +208,20 @@ int peek_poke_example(uint32_t value, int slot_id, int pf_id, int bar_id) {
     rc = fpga_pci_attach(slot_id, pf_id, bar_id, 0, &pci_bar_handle);
     fail_on(rc, out, "Unable to attach to the AFI on slot id %d", slot_id);
 #endif
-        int i;
-        addr = UINT64_C(0x504);
+        int ii;
+        addr UINT64_C=0x504;
 		uint32_t block[] ={0x20000000,0x00000000,0x00000000,0x106c736f,0xa3ada446,0x0741e1c5,0xbb28031a,0x6b9454c2,0xc8632210,0x61a371aa,0x822b9f52,0xf3080009,0xdfde982c,0x096e5522,0xd73c6ecb,0xc33f1855,0x095ab1a2,0x62fa443a,0x1816dd9c,0xc39eacd0};
-		for (i = 0; i < 20; i++) {
+		for (ii = 0; ii < 20; ii++) {
 			rc = fpga_pci_poke(pci_bar_handle, addr, block[i]);
 			addr += 4;
 		}
 
     fail_on(rc, out, "Unable to write to the fpga !");
-    addr = UINT64_C(0x554);
-	int i;		
-	for (i = 0; i < 10; i++) {
+    addr UINT64_C=0x554;
+	int ir;		
+	for (ir = 0; ir < 10; ir++) {
 		rc = fpga_pci_peek(pci_bar_handle, addr, &value);
-		sleep(5);
+		msleep(15);
 			}
 
     fail_on(rc, out, "Unable to read read from the fpga !");
