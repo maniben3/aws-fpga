@@ -18,7 +18,6 @@
 #include <stdarg.h>
 #include <assert.h>
 #include <string.h>
-#include <unistd.h>
 
 #ifdef SV_TEST
    #include "fpga_pci_sv.h"
@@ -56,7 +55,6 @@ int check_afi_ready(int slot_id);
 
 void usage(char* program_name) {
     printf("usage: %s [--slot <slot-id>][<poke-value>]\n", program_name);
-    printf("Enter value");
 }
 
 uint32_t byte_swap(uint32_t value);
@@ -94,8 +92,8 @@ int main(int argc, char **argv)
       scope = svGetScopeFromName("tb");
       svSetScope(scope);
     #endif
-    uint32_t value;
-    scanf("%x", &value);
+
+    uint32_t value = 0xefbeadde;
     int slot_id = 0;
     int rc;
     
@@ -246,28 +244,24 @@ int peek_poke_example(uint32_t value, int slot_id, int pf_id, int bar_id) {
     rc = fpga_pci_attach(slot_id, pf_id, bar_id, 0, &pci_bar_handle);
     fail_on(rc, out, "Unable to attach to the AFI on slot id %d", slot_id);
 #endif
-    
-    /* write a value into the mapped address space */
-    uint32_t expected = byte_swap(value);
-    printf("Writing 0x%08x to HELLO_WORLD register (0x%016lx)\n", value, HELLO_WORLD_REG_ADDR);
-    rc = fpga_pci_poke(pci_bar_handle, HELLO_WORLD_REG_ADDR, value);
+        addr = UINT64_C(0x504);
+		uint32_t block={0x20000000,0x00000000,0x00000000,0x106c736f,0xa3ada446,0x0741e1c5,0xbb28031a,0x6b9454c2,0xc8632210,0x61a371aa,0x822b9f52,0xf3080009,0xdfde982c,0x096e5522,0xd73c6ecb,0xc33f1855,0x095ab1a2,0x62fa443a,0x1816dd9c,0xc39eacd0};
+		for (i = 0; i < 20; i++) {
+			rc = fpga_pci_poke(pci_bar_handle, addr, block[i]);
+			addr += 4;
+		}
 
     fail_on(rc, out, "Unable to write to the fpga !");
+    addr = UINT64_C(0x554);
+			
+	for (i = 0; i < 10; i++) {
+		rc = fpga_pci_peek(pci_bar_handle, addr, &value);
+		sleep(5);
+			}
 
-    /* read it back and print it out; you should expect the byte order to be
-     * reversed (That's what this CL does) */
-    rc = fpga_pci_peek(pci_bar_handle, HELLO_WORLD_REG_ADDR, &value);
     fail_on(rc, out, "Unable to read read from the fpga !");
     printf("=====  Entering peek_poke_example =====\n");
     printf("register: 0x%x\n", value);
-    if(value == expected) {
-        printf("TEST PASSED");
-        printf("Resulting value matched expected value 0x%x. It worked!\n", expected);
-    }
-    else{
-        printf("TEST FAILED");
-        printf("Resulting value did not match expected value 0x%x. Something didn't work.\n", expected);
-    }
 out:
     /* clean up */
     if (pci_bar_handle >= 0) {
