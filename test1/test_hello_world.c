@@ -15,8 +15,8 @@
 #endif
 
 #include <utils/sh_dpi_tasks.h>
-#define HELLO_WORLD_REG_ADDR UINT64_C(0x500)
-
+#define HELLO_WORLD_REG_ADDR UINT64_C(0x504)
+#define HELLO_WORLD_ADDR UINT64_C(0x554)
 
 #ifndef SV_TEST
 const struct logger *logger = &logger_stdout;
@@ -199,7 +199,7 @@ int peek_poke_example(uint32_t value, int slot_id, int pf_id, int bar_id) {
 
     /* read it back and print it out; you should expect the byte order to be
      * reversed (That's what this CL does) */
-    rc = fpga_pci_peek(pci_bar_handle, HELLO_WORLD_REG_ADDR, &value);
+    rc = fpga_pci_peek(pci_bar_handle, HELLO_WORLD_ADDR, &value);
     fail_on(rc, out, "Unable to read read from the fpga !");
     printf("=====  Entering peek_poke_example =====\n");
     printf("register: 0x%x\n", value);
