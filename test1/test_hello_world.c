@@ -1,24 +1,10 @@
-// Amazon FPGA Hardware Development Kit
-//
-// Copyright 2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-//
-// Licensed under the Amazon Software License (the "License"). You may not use
-// this file except in compliance with the License. A copy of the License is
-// located at
-//
-//    http://aws.amazon.com/asl/
-//
-// or in the "license" file accompanying this file. This file is distributed on
-// an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
-// implied. See the License for the specific language governing permissions and
-// limitations under the License.
+
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdarg.h>
 #include <assert.h>
 #include <string.h>
-#include <ctype.h>
 
 #ifdef SV_TEST
    #include "fpga_pci_sv.h"
@@ -29,37 +15,26 @@
 #endif
 
 #include <utils/sh_dpi_tasks.h>
+#define HELLO_WORLD_REG_ADDR UINT64_C(0x500)
 
-/* Constants determined by the CL */
-/* a set of register offsets; this CL has only one */
-/* these register addresses should match the addresses in */
-/* /aws-fpga/hdk/cl/examples/common/cl_common_defines.vh */
-/* SV_TEST macro should be set if SW/HW co-simulation should be enabled */
 
-/* use the stdout logger for printing debug information  */
 #ifndef SV_TEST
 const struct logger *logger = &logger_stdout;
-/*
- * pci_vendor_id and pci_device_id values below are Amazon's and avaliable to use for a given FPGA slot. 
- * Users may replace these with their own if allocated to them by PCI SIG
- */
 static uint16_t pci_vendor_id = 0x1D0F; /* Amazon PCI Vendor ID */
 static uint16_t pci_device_id = 0xF000; /* PCI Device ID preassigned by Amazon for F1 applications */
-
-/*
- * check if the corresponding AFI for hello_world is loaded
- */
 int check_afi_ready(int slot_id);
 
 void usage(char* program_name) {
     printf("usage: %s [--slot <slot-id>][<poke-value>]\n", program_name);
 }
 
+ 
 #endif
 
 /*
  * An example to attach to an arbitrary slot, pf, and bar with register access.
  */
+int peek_poke_example(uint32_t value, int slot_id, int pf_id, int bar_id);
 
 #ifdef SV_TEST
 //For cadence and questa simulators the main has to return some value
@@ -118,6 +93,12 @@ int main(int argc, char **argv)
     fail_on(rc, out, "AFI not ready");
 #endif
 
+    
+    /* Accessing the CL registers via AppPF BAR0, which maps to sh_cl_ocl_ AXI-Lite bus between AWS FPGA Shell and the CL*/
+
+    printf("===== Starting with peek_poke_example =====\n");
+    rc = peek_poke_example(value, slot_id, FPGA_APP_PF, APP_PF_BAR0);
+    fail_on(rc, out, "peek-poke example failed");
 
 #ifndef SV_TEST
     return rc;
@@ -209,23 +190,16 @@ int peek_poke_example(uint32_t value, int slot_id, int pf_id, int bar_id) {
     rc = fpga_pci_attach(slot_id, pf_id, bar_id, 0, &pci_bar_handle);
     fail_on(rc, out, "Unable to attach to the AFI on slot id %d", slot_id);
 #endif
-        int ii;
-	uint64_t addr;
-        addr = UINT64_C(0x504);
-		uint32_t block[] ={0x20000000,0x00000000,0x00000000,0x106c736f,0xa3ada446,0x0741e1c5,0xbb28031a,0x6b9454c2,0xc8632210,0x61a371aa,0x822b9f52,0xf3080009,0xdfde982c,0x096e5522,0xd73c6ecb,0xc33f1855,0x095ab1a2,0x62fa443a,0x1816dd9c,0xc39eacd0};
-		for (ii = 0; ii < 20; ii++) {
-			rc = fpga_pci_poke(pci_bar_handle, addr, block[ii]);
-			addr += 4;
-		}
+    
+    /* write a value into the mapped address space */
+    printf("Writing 0x%08x to HELLO_WORLD register (0x%016lx)\n", value, HELLO_WORLD_REG_ADDR);
+    rc = fpga_pci_poke(pci_bar_handle, HELLO_WORLD_REG_ADDR, value);
 
     fail_on(rc, out, "Unable to write to the fpga !");
-    addr = UINT64_C(0x554);
-	int ir;		
-	for (ir = 0; ir < 10; ir++) {
-		rc = fpga_pci_peek(pci_bar_handle, addr, &value);
-		msleep(15);
-			}
 
+    /* read it back and print it out; you should expect the byte order to be
+     * reversed (That's what this CL does) */
+    rc = fpga_pci_peek(pci_bar_handle, HELLO_WORLD_REG_ADDR, &value);
     fail_on(rc, out, "Unable to read read from the fpga !");
     printf("=====  Entering peek_poke_example =====\n");
     printf("register: 0x%x\n", value);
