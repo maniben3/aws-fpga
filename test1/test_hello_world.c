@@ -204,7 +204,7 @@ int peek_poke_example(uint32_t value, int slot_id, int pf_id, int bar_id) {
     fail_on(rc, out, "Unable to write to the fpga !");
     for (i = 0; i < 10; i++) {
 				rc = fpga_pci_peek(pci_bar_handle, HELLO_WORLD_ADDR, &value);
-				msleep(50);
+				msleep(1);
 			}
     fail_on(rc, out, "Unable to read read from the fpga !");
     printf("=====  Entering peek_poke_example =====\n");
