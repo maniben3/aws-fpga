@@ -194,9 +194,8 @@ int peek_poke_example(uint32_t value, int slot_id, int pf_id, int bar_id) {
     /* write a value into the mapped address space */
     printf("Writing 0x%08x to HELLO_WORLD register (0x%016lx)\n", value, HELLO_WORLD_REG_ADDR);
     int i;
-    for (i = 0; i < chunks; i++) {
-//			rc = fpga_pci_poke(pci_bar_handle, addr, b32[i]);
-            uint32_t block={0x20000000,0x00000000,0x00000000,0x106c736f,0xa3ada446,0x0741e1c5,0xbb28031a,0x6b9454c2,0xc8632210,0x61a371aa,0x822b9f52,0xf3080009,0xdfde982c,0x096e5522,0xd73c6ecb,0xc33f1855,0x095ab1a2,0x62fa443a,0x1816dd9c,0xc39eacd0};
+    for (i = 0; i < 20; i++) {
+                        uint32_t block={0x20000000,0x00000000,0x00000000,0x106c736f,0xa3ada446,0x0741e1c5,0xbb28031a,0x6b9454c2,0xc8632210,0x61a371aa,0x822b9f52,0xf3080009,0xdfde982c,0x096e5522,0xd73c6ecb,0xc33f1855,0x095ab1a2,0x62fa443a,0x1816dd9c,0xc39eacd0};
 
 			rc = fpga_pci_poke(pci_bar_handle, HELLO_WORLD_REG_ADDR, block[i]));
 			HELLO_WORLD_REG_ADDR += 4;
@@ -204,7 +203,7 @@ int peek_poke_example(uint32_t value, int slot_id, int pf_id, int bar_id) {
     fail_on(rc, out, "Unable to write to the fpga !");
     for (i = 0; i < 10; i++) {
 				rc = fpga_pci_peek(pci_bar_handle, HELLO_WORLD_ADDR, &value);
-				sleep(5);
+				msleep(50);
 			}
     fail_on(rc, out, "Unable to read read from the fpga !");
     printf("=====  Entering peek_poke_example =====\n");
