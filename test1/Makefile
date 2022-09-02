@@ -22,11 +22,11 @@ INCLUDES += -I ./include
 CC = gcc
 CFLAGS = -DCONFIG_LOGLEVEL=4 -g -Wall $(INCLUDES)
 
-LDLIBS = -lfpga_mgmt -lrt -lpthread
+LDLIBS = -lfpga_mgmt -lrt -lpthread -fPIC -shared
 
 SRC = ${SDK_DIR}/userspace/utils/sh_dpi_tasks.c test_hello_world.c
 OBJ = $(SRC:.c=.o)
-BIN = test_hello_world
+BIN = test_hello_world.so
 
 all: $(BIN) check_env
 
